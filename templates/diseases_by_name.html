@@ -1,0 +1,92 @@
+<head>
+	<style>
+		body {
+		  text-align: center;
+		}
+
+		body,
+		input,
+		button {
+		  font-family: palatino;
+		  font-size: 12pt;
+		}
+
+		div {
+		  background-color: white;
+		  display: inline-block;
+		  left: -5px;
+		  border-left: none;
+		  cursor: pointer;
+		}
+
+		input {
+		  width: 250px;
+		  height: 30px;
+		  padding: 3px;
+		  border: 1px solid #DDE1E4;
+		}
+
+		select {
+		  width: 258px;
+		  position: relative;
+		  left: -17px;
+		  margin: 0;
+		  border: 1px solid #DDE1E4;
+		  border-top: none;
+		  font-size:9pt;
+		}
+
+		datalist {
+		  display: none;
+		}
+
+		option {
+		  padding: 3px;
+		}
+
+		option:hover {
+		  background-color: #11E8EA;
+		}
+
+		button {
+		  height: 38px;
+		  position: relative;
+		  left: -5px;
+		  border: 1px solid #DDE1E4;
+		  border-left: none;
+		  background-color: #11E8EA;
+		  cursor: pointer;
+		}
+
+		h3,
+		h4 {
+		  text-align: center;
+		}
+
+
+		/* to hide datalist arrow in webkit */
+
+		input::-webkit-calendar-picker-indicator {
+		  display: none;
+		}
+    </style>
+</head>
+<body>
+	<a href='/'>Back</a>
+
+	<h2>Diseases that contain "{{ query }}":</h2>
+	<div name="diseases">
+		<table style="width:100%">
+		  <tr>
+			<th>Default Label</th>
+			<th>Ro Translation</th>
+		  </tr>
+		{% for disease in diseases %}
+		  <tr>
+			<td>{{ disease[0] }}</td>
+			<td>{{ disease[1] }}</td>
+		  </tr>
+	  	{% endfor %}
+		</table>
+	</div>
+</body>
