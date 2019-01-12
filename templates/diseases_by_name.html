@@ -74,17 +74,20 @@
 <body>
 	<a href='/'>Back</a>
 
+	<h2>{{ language }}</h2>
 	<h2>Diseases that contain "{{ query }}":</h2>
 	<div name="diseases">
 		<table style="width:100%">
 		  <tr>
 			<th>Default Label</th>
 			<th>Ro Translation</th>
+			<th>Symptoms</th>
 		  </tr>
 		{% for disease in diseases %}
 		  <tr>
 			<td>{{ disease[0] }}</td>
 			<td>{{ disease[1] }}</td>
+			<td>{{ disease[2] }}</td>
 		  </tr>
 	  	{% endfor %}
 		</table>
