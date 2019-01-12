@@ -69,6 +69,29 @@
 		input::-webkit-calendar-picker-indicator {
 		  display: none;
 		}
+
+		#dis {
+		  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+		  border-collapse: collapse;
+		  width: 100%;
+		}
+
+		#dis td, #dis th {
+		  border: 1px solid #ddd;
+		  padding: 8px;
+		}
+
+		#dis tr:nth-child(even){background-color: #f2f2f2;}
+
+		#dis tr:hover {background-color: #ddd;}
+
+		#dis th {
+		  padding-top: 12px;
+		  padding-bottom: 12px;
+		  text-align: left;
+		  background-color: #11E8EA;
+		  color: black;
+		}
     </style>
 </head>
 <body>
@@ -77,17 +100,19 @@
 	<h2>{{ language }}</h2>
 	<h2>Diseases that contain "{{ query }}":</h2>
 	<div name="diseases">
-		<table style="width:100%">
+		<table id="dis" style="width:100%">
 		  <tr>
 			<th>Default Label</th>
+			<th>Exact Eng Synonym</th>
 			<th>Ro Translation</th>
 			<th>Symptoms</th>
 		  </tr>
 		{% for disease in diseases %}
 		  <tr>
-			<td>{{ disease[0] }}</td>
-			<td>{{ disease[1] }}</td>
-			<td>{{ disease[2] }}</td>
+			<td>{{ disease }}</td>
+			<td>{{ ', '.join(diseases[disease][2]) }}</td>
+			<td>{{ diseases[disease][0] }}</td>
+			<td>{{ diseases[disease][1] }}</td>
 		  </tr>
 	  	{% endfor %}
 		</table>

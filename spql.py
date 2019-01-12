@@ -60,11 +60,12 @@ def query_by_contains_name(disease_name_ro):
 	prefix oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
 	prefix purlObo: <http://purl.obolibrary.org/obo/doid.owl#>
 
-	SELECT DISTINCT ?s ?label ?trans ?symptom
+	SELECT DISTINCT ?s ?label ?syn ?trans ?symptom
 	WHERE {
 		   ?s a owl:Class .
 		   ?s rdfs:label ?label .
   		   ?s purlObo:ro_translation ?trans .
+		   ?s oboInOwl:hasExactSynonym ?syn .
 		   ?s obo:IAO_0000115 ?symptom .
   			FILTER regex(?trans, "%s", "i" ) 
 	}
@@ -79,15 +80,16 @@ def query_by_contains_name_en(disease_name_en):
 		prefix oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
 		prefix purlObo: <http://purl.obolibrary.org/obo/doid.owl#>
 
-		SELECT DISTINCT ?s ?label ?trans ?symptom
+		SELECT DISTINCT ?s ?label ?syn ?trans ?symptom
 		WHERE {
 			   ?s a owl:Class .
 			   ?s rdfs:label ?label .
 	  		   ?s purlObo:ro_translation ?trans .
+	  		   ?s oboInOwl:hasExactSynonym ?syn .
 			   ?s obo:IAO_0000115 ?symptom .
-	  			FILTER regex(?label, "%s", "i" ) 
+	  			FILTER (regex(?label, "%s", "i" ) || regex(?syn, "%s", "i" )) 	  	
 		}
-		""" % disease_name_en
+		""" % (disease_name_en, disease_name_en)
 
 @app.route('/')
 def index():
@@ -105,13 +107,21 @@ def select():
 	json_string = query(query_string, "", sparql_service)
 	resultset = json.loads(json_string)
 
-	label_trans = []
+	label_trans = {}
+	syn_dict = {}
 	for result in resultset["results"]["bindings"]:
 		label = result["label"]["value"]
 		syn = result["trans"]["value"]
 		symptoms = result["symptom"]["value"]
+		en_syn = result["syn"]["value"]
 
-		label_trans.append((label, syn, symptoms))
+		if label not in syn_dict:
+			syn_dict[label] = [en_syn]
+		else:
+			syn_dict[label].append(en_syn)
+
+		if label not in label_trans:
+			label_trans[label] = (syn, symptoms, syn_dict[label])
 
 	html_page = render_template("diseases_by_name.html", **{
 			'query': disease_name,
@@ -132,13 +142,21 @@ def select_en():
 	json_string = query(query_string, "", sparql_service)
 	resultset = json.loads(json_string)
 
-	label_trans = []
+	label_trans = {}
+	syn_dict = {}
 	for result in resultset["results"]["bindings"]:
 		label = result["label"]["value"]
 		syn = result["trans"]["value"]
 		symptoms = result["symptom"]["value"]
+		en_syn = result["syn"]["value"]
 
-		label_trans.append((label, syn, symptoms))
+		if label not in syn_dict:
+			syn_dict[label] = [en_syn]
+		else:
+			syn_dict[label].append(en_syn)
+
+		if label not in label_trans:
+			label_trans[label] = (syn, symptoms, syn_dict[label])
 
 	html_page = render_template("diseases_by_name.html", **{
 		'query': disease_name,
